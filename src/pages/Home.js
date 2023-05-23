@@ -16,7 +16,7 @@ function Home() {
                 porttitor semper.
             </div>
 
-            <img src={image} style={{ width: "30%", height: "30%" }} className="image" alt="placeholder"/>
+            <img src={image} className="image" alt="placeholder"/>
 
             <div className="difficulty">
                 <div className="heading">
