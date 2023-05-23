@@ -8,12 +8,10 @@ function Home() {
     return (
         <div className="home">
             <div className="text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus quis magna molestie pharetra. 
-                Cras mattis aliquet posuere. Pellentesque at ligula et nibh scelerisque laoreet. Sed bibendum, 
-                sem ut sagittis consequat, augue lectus ullamcorper arcu, a pretium felis felis et nibh. 
-                Phasellus elementum nisi velit, id scelerisque dolor consequat gravida. Sed est orci, blandit 
-                ut erat vel, volutpat faucibus purus. Nunc in turpis vel odio fringilla semper. Sed mollis 
-                porttitor semper.
+            The Connect 4 game is a traditional strategy game in which two players compete to control the grid. 
+            Each player has a distinct colour. You can place the discs in any of the columns you want. The goal 
+            is to get four of the same colour in a row that can be diagonal, horizontal, or vertical. Begin by 
+            determining the level of difficulty for the AI opponent.
             </div>
 
             <img src={image} className="image" alt="placeholder"/>
@@ -24,9 +22,9 @@ function Home() {
                 </div>
 
                 <div className="items">
-                    <Button className="button">Easy</Button>{' '}
-                    <Button className="button">Medium</Button>{' '}
-                    <Button className="button">Hard</Button>{' '}
+                    <Button bsPrefix="custom-btn" className="custom-btn">Easy</Button>{' '}
+                    <Button bsPrefix="custom-btn" className="custom-btn">Medium</Button>{' '}
+                    <Button bsPrefix="custom-btn" className="custom-btn">Hard</Button>{' '}
                 </div>
             </div>
 

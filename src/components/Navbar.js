@@ -1,5 +1,4 @@
 // import {Link, useLocation} from 'react-router-dom';
-
 import '../styles/Navbar.css';
 import Button from 'react-bootstrap/Button';
 
@@ -7,7 +6,7 @@ function Navbar() {
     return (
         <div className="navbar">
             <div className="links">
-                <Button className="nav-button">Login</Button>{' '}
+                <Button bsPrefix="nav-button" class="nav-button">Login</Button>{' '}
             </div>
         </div>
     )

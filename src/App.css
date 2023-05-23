@@ -1,19 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&display=swap');
-
 :root {
-    --background: #0b253c
-    --primary: #1fc1c3
+    --background: #0b253c;
+    --primary: #1fc1c3;
+    --primary-hover: #148e90;
     --secondary: #5175f2;
+    --secondary-hover: #2d4dc0;
     --accent: #ffffff;
 }
 
 .App {
     text-align: center;
+    font-family: Arial, Verdana, Helvetica, Georgia;
   }
   
-  body {
-    padding: 0;
-    margin: 0;  
-    background-color: #0b253c;
-    font-family: 'Work Sans', sans-serif;
-  }
+html, body {
+  padding: 0;
+  margin: 0; 
+  background-color: var(--background);
+  font-family: 'Work Sans', sans-serif;
+}
