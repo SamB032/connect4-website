@@ -1,0 +1,55 @@
+.home {
+    width: 100%;
+    align-items: center;
+    color: #ffffff;
+}
+
+.text {
+    text-align: center;
+    font-size: 18px;
+    padding-left: 130px;
+    padding-right: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.image {
+    justify-content: center;
+    padding-top: 35px;
+}
+
+.difficulty {
+    padding-top: 35px;
+    font-size: 25px;
+}
+
+.items {
+    padding-top: 35px;
+}
+
+.button {
+    margin-left: 25px;
+    margin-right: 25px;
+    height: 60px;
+    width: 200px;
+    font-size: 18px;
+    color: #ffffff;
+    background-color: #1fc1c3;
+    border-color: transparent;
+    border-width: 1px;
+    border-radius: 0.375rem;
+}
+
+.button:hover{
+    background-color: #1e9ea1;
+    transition: 0.7s;
+}
+
+@media only screen and (max-width: 800px) {
+    .text {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+  }
