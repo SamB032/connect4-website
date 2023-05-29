@@ -6,10 +6,10 @@ function Navbar() {
     return (
         <div className="navbar">
             <div className="links">
-                <Button bsPrefix="nav-button" class="nav-button">Login</Button>{' '}
+                <Button bsPrefix="nav-button" className="nav-button">Login</Button>{' '}
             </div>
         </div>
-    )
+    );
 }
 
 export default Navbar;

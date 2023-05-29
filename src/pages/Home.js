@@ -2,7 +2,7 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 
 import '../styles/Home.css';
-import image from '../assets/placeholder.png'
+import image from '../assets/connect4game.webp'
 
 function Home() {
     return (

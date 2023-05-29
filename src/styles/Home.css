@@ -18,8 +18,8 @@
 .image {
     justify-content: center;
     padding-top: 35px;
-    width: 30%;
-    height: 30%;
+    width: 25%;
+    height: 25%;
 }
 
 .difficulty {
@@ -51,8 +51,8 @@
 
 @media only screen and (max-width: 800px) {
     .text {
-        padding-left: 30px;
-        padding-right: 30px;
+        padding-left: 25px;
+        padding-right: 25px;
     }
 
     .image {
