@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import {Link} from 'react-router-dom';
 
 import '../styles/Home.css';
@@ -22,11 +21,18 @@ function Home() {
                     Difficulty:
                 </div>
 
-                <div className="items">
-                    <Button as={Link} to="/game/easy" bsPrefix="custom-btn" className="custom-btn">Easy</Button>{' '}
-                    <Button as={Link} to="/game/medium" bsPrefix="custom-btn" className="custom-btn">Medium</Button>{' '}
-                    <Button as={Link} to="/game/hard" bsPrefix="custom-btn" className="custom-btn">Hard</Button>{' '}
-                </div>
+                {/* Buttons for selecting the difficulty */}
+                <Link to="/game/easy">
+                    <button className="custom-btn">Easy</button>
+                </Link>
+               
+                <Link to="/game/medium">
+                    <button className="custom-btn">Medium</button>
+                </Link>
+                
+                <Link to="/game/hard">
+                    <button className="custom-btn">Hard</button>
+                </Link>
             </div>
 
         </div>

@@ -1,3 +1,5 @@
+import {easyBotPredict} from "./Easybot";
+
 class Game {
 
     static PLAYER = 1;
@@ -6,10 +8,14 @@ class Game {
     static NUMBER_OF_ROWS = 6; 
     static NUMBER_OF_COLUMNS = 7;
 
-    constructor() {
+    //Takes param of difficulty, this helps it choose the correct bot
+    constructor(difficulty) {
         //Set the game up
 
         this.board = [];
+        
+        this.difficulty = difficulty;
+        this.LoadBot(difficulty);
 
         this.currentColumns = [5, 5, 5, 5, 5, 5, 5];
         this.gameOver = false; // used to keep track of when the game has ended
@@ -26,6 +32,28 @@ class Game {
         }
     }
 
+    //
+    LoadBot(difficulty){
+        switch(difficulty){
+            case "easy":
+                this.botPredict = easyBotPredict;
+                break;
+            case "medium":
+                console.log("Pass");
+                break;
+            case "hard":
+                console.log("Pass");
+                break;
+            default:
+                console.log("Error: bot difficulty not found");
+                break;
+        }
+    };
+
+    makebotPredition() {
+        return this.botPredict(this.availableColumns());
+    };
+
     //Returns rendered cells
     renderBoard() {
         const cells = [];
@@ -34,24 +62,47 @@ class Game {
         for (let row = 0; row < Game.NUMBER_OF_ROWS; row++) {
             for (let col = 0; col < Game.NUMBER_OF_COLUMNS; col++) {
                 const cellId = `${row}-${col}`;
-                cells.push(<div key={cellId} id={cellId} className="tile" onClick={(event) => this.setPiece(event.target.id.split("-"))}></div>);
+                cells.push(<div 
+                    key={cellId} 
+                    id={cellId} 
+                    className="tile" 
+                    onClick={(event) => this.setPiece(event.target.id.split("-"))}>
+                    </div>);
                 // The onclick will send the coordinate to the div pressed to setPiece() method
             }
         }
         return cells;
     };
 
+    // 
     setPiece(coords) {
-        if (this.gameOver) {
-            return;
+        // Get column of item pressed
+        let winningCoordinate;
+        let col = parseInt(coords[1]);
+        let row = this.updatePiece(col);
+        
+        winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
+        if (winningCoordinate){
+            this.hasWinner(winningCoordinate);
         }
         
-        // Get row and column of item pressed
-        let row = parseInt(coords[0]);
-        let col = parseInt(coords[1]);
-        
-        // Find the row number in the column the item needs to be pressed on
-        row = this.currentColumns[col]; 
+        //Bot will play its turn, check to see if the bots move has made it win
+        this.updatePiece(this.makebotPredition());
+        winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
+        if (winningCoordinate){
+            this.hasWinner(winningCoordinate);
+        }
+        return;
+    };
+
+    //Once the player/bot has chosen the column, the program will place the disk
+    updatePiece(col){
+        if (this.gameOver) {
+            return -1;
+        }
+
+        // Find the row disc needs to be placed on
+        let row = this.currentColumns[col]; 
         
         //Returns if the column is already full
         if (row < 0) {
@@ -70,27 +121,24 @@ class Game {
             tile.classList.add("yellow-piece");
             this.currentPlayer = Game.PLAYER;
         }
-    
         row--; //Decrement the new column height to reflect the adding of the disk
         this.currentColumns[col] = row; //update the array
-        
-        var winningCoordinate = this.checkForWinner(); //if a player has won, it returns coordinates, otherwise false.
-        //This code checks to see who has won
-        if (winningCoordinate){ 
-            this.gameOver = true; //Makes it so that once the game has finshed, the game cannot continue
-            row = winningCoordinate[0];
-            col = winningCoordinate[1];
+    }
+
+    //A actor has won, this method will to stop the game and display a message
+    hasWinner(winningCoordinate){
+        this.gameOver = true; //Makes it so that once the game has finshed, the game cannot continue
+        let row = winningCoordinate[0];
+        let col = winningCoordinate[1];
     
-            if (this.board[row][col] === Game.PLAYER) {
-                //the player has won
-                console.log("PLAYER WINS");
-            } else if (this.board[row][col] === Game.BOT) {
-                //The bot has won
-                console.log("BOT WINS");
-            }
+        if (this.board[row][col] === Game.PLAYER) {
+            //the player has won
+            console.log("PLAYER WINS");
+        } else if (this.board[row][col] === Game.BOT) {
+            //The bot has won
+            console.log("BOT WINS");
         }
-        return;
-    };
+    }
 
     checkForWinner(){
         //Check horizontal
