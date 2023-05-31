@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
+import {Link} from 'react-router-dom';
 
 import '../styles/Home.css';
 import image from '../assets/connect4game.webp'
@@ -22,9 +23,9 @@ function Home() {
                 </div>
 
                 <div className="items">
-                    <Button bsPrefix="custom-btn" className="custom-btn">Easy</Button>{' '}
-                    <Button bsPrefix="custom-btn" className="custom-btn">Medium</Button>{' '}
-                    <Button bsPrefix="custom-btn" className="custom-btn">Hard</Button>{' '}
+                    <Button as={Link} to="/game/easy" bsPrefix="custom-btn" className="custom-btn">Easy</Button>{' '}
+                    <Button as={Link} to="/game/medium" bsPrefix="custom-btn" className="custom-btn">Medium</Button>{' '}
+                    <Button as={Link} to="/game/hard" bsPrefix="custom-btn" className="custom-btn">Hard</Button>{' '}
                 </div>
             </div>
 
