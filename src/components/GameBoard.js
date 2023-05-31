@@ -1,14 +1,16 @@
 import {useState} from 'react';
 import '../styles/GameBoard.css';
 
-import {setGame, renderBoard, setPiece} from '../Helpers/gameFunctions.js'
+import Game from '../helpers/game'
 
 function GameBoard(){
-    const [board, setBoard] = useState(setGame());
+
+    const [board, setBoard] = useState(new Game());
+    //TODO: Add modal on winning https://react-bootstrap.github.io/components/modal/
 
     return (
         <div className="board">
-            {renderBoard(board, setPiece)}
+            {board.renderBoard()};
         </div>
     );
 };
