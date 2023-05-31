@@ -1,4 +1,5 @@
 import {easyBotPredict} from "./Easybot";
+import {hardBotPredict} from "./Hardbot";
 
 class Game {
 
@@ -42,7 +43,7 @@ class Game {
                 console.log("Pass");
                 break;
             case "hard":
-                console.log("Pass");
+                this.botPredict = hardBotPredict;
                 break;
             default:
                 console.log("Error: bot difficulty not found");
@@ -51,7 +52,8 @@ class Game {
     };
 
     makebotPredition() {
-        return this.botPredict(this.availableColumns());
+        return this.botPredict(this.board);
+        // return this.botPredict(this.validCoordinates());
     };
 
     //Returns rendered cells
@@ -79,7 +81,7 @@ class Game {
         // Get column of item pressed
         let winningCoordinate;
         let col = parseInt(coords[1]);
-        let row = this.updatePiece(col);
+        this.updatePiece(col);
         
         winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
         if (winningCoordinate){
@@ -131,10 +133,12 @@ class Game {
         let row = winningCoordinate[0];
         let col = winningCoordinate[1];
     
-        if (this.board[row][col] === Game.PLAYER) {
+        let winningPlayer = this.coordinateOwnership(row, col);
+
+        if (winningPlayer === Game.PLAYER) {
             //the player has won
             console.log("PLAYER WINS");
-        } else if (this.board[row][col] === Game.BOT) {
+        } else if (winningPlayer === Game.BOT) {
             //The bot has won
             console.log("BOT WINS");
         }
@@ -192,17 +196,40 @@ class Game {
         return false;
     };
 
-    //Returns an array of columns that are not full of disks
-    availableColumns(){
-        const columnsArr = []
 
-        //Loops through currentColumns and adds the index if the number of free spaces is >= 0
+    //Returns an 2d array of valid coordinates
+    validCoordinates(){
+        const coordinates = [];
+        
         for (let col = 0; col < Game.NUMBER_OF_COLUMNS; col++){
-            if (this.currentColumns[col] >= 0) {
-                columnsArr.push(col);
+            let row = this.currentColumns[col];
+
+            if (row >= 0) {
+                coordinates.push([row,col]);
             }
         }
-        return columnsArr;
+        return coordinates;
+    }
+
+    //Returns true if a board does have null
+    boardHasNull(){
+        for (let row = 0; row < Game.NUMBER_OF_ROWS; row++) {
+            for (let col = 0; col < Game.NUMBER_OF_COLUMNS; col++) {
+                if (this.board[row][col] === null) {
+                    return true; // Found a null value, return true
+                }
+            }
+        }
+        return false; // No null values found
+    }
+
+    coordinateOwnership(row, col){
+        if (this.board[row][col] === Game.PLAYER) {
+            return Game.PLAYER; //Coordinate belongs to player
+        } else if (this.board[row][col] === Game.BOT) {
+            return Game.BOT; //Coordinate belongs to bot
+        }
+        return null;
     }
 }
 

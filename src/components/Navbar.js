@@ -5,7 +5,7 @@ function Navbar() {
     return (
         <div className="navbar">
             <div className="links">
-                <button bsPrefix="nav-button" className="nav-button">Login</button>{' '}
+                <button className="nav-button">Login</button>{' '}
             </div>
         </div>
     );
