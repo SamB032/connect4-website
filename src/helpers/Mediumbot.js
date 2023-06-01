@@ -1,1 +1,0 @@
-//Implement a better algorithm but not as good as minimax

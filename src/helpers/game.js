@@ -1,13 +1,19 @@
 import {easyBotPredict} from "./Easybot";
-import {hardBotPredict} from "./Hardbot";
+import {runMinimax} from "./minimax";
+import {checkForWinner} from "./CheckWinner";
+
+//TODO END THE GAME WHEN ALL ROWS ARE FILLED
 
 class Game {
 
-    static PLAYER = 1;
-    static BOT = 2;
+    static PLAYER = 1; //Identifies player on the board
+    static BOT = 2; //Identifies the bot on the board
 
     static NUMBER_OF_ROWS = 6; 
     static NUMBER_OF_COLUMNS = 7;
+
+    static MEDIUM_DEPTH = 1; // Minimax algorithm only looks 1 move ahead for medium difficulty
+    static HARD_DEPTH = 7; // Minimax algorithm looks 7 moves ahead for hard difficulty
 
     //Takes param of difficulty, this helps it choose the correct bot
     constructor(difficulty) {
@@ -33,27 +39,32 @@ class Game {
         }
     }
 
-    //
+    /* Loads the difficulty based on the input from the gameBoard page, this create a varible
+    Pointing to a function with the relevent parameters. All we do is call the function with the parameters 
+    and it will turn the bots chosen column */
     LoadBot(difficulty){
         switch(difficulty){
             case "easy":
                 this.botPredict = easyBotPredict;
                 break;
             case "medium":
-                console.log("Pass");
+                this.botPredict = runMinimax;
+                this.depth = Game.MEDIUM_DEPTH;
                 break;
             case "hard":
-                this.botPredict = hardBotPredict;
+                this.botPredict = runMinimax;
+                this.depth = Game.HARD_DEPTH;
                 break;
             default:
+                //TODO: Add redirect to 404 page
                 console.log("Error: bot difficulty not found");
                 break;
         }
     };
 
+    //Returns the column chosen by the bot
     makebotPredition() {
-        return this.botPredict(this.board);
-        // return this.botPredict(this.validCoordinates());
+        return this.botPredict(this.board, this.depth);
     };
 
     //Returns rendered cells
@@ -76,8 +87,13 @@ class Game {
         return cells;
     };
 
-    // 
+    //Method runs when the player has chosen a space, the program will process these action, then the bots
     setPiece(coords) {
+        //Makes sure that the player is not playing out of turn
+        if (Game.PLAYER !== this.currentPlayer){
+            return;
+        }
+
         // Get column of item pressed
         let winningCoordinate;
         let col = parseInt(coords[1]);
@@ -86,13 +102,14 @@ class Game {
         winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
         if (winningCoordinate){
             this.hasWinner(winningCoordinate);
-        }
-        
-        //Bot will play its turn, check to see if the bots move has made it win
-        this.updatePiece(this.makebotPredition());
-        winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
-        if (winningCoordinate){
-            this.hasWinner(winningCoordinate);
+        } else {
+            //Bot will play its turn, check to see if the bots move has made it win
+            
+            this.updatePiece(this.makebotPredition());
+            winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
+            if (winningCoordinate){
+                this.hasWinner(winningCoordinate);
+            }
         }
         return;
     };
@@ -119,9 +136,11 @@ class Game {
         if (this.currentPlayer === Game.PLAYER) {
             tile.classList.add("red-piece");
             this.currentPlayer = Game.BOT;
+            console.log("Bots turn");
         } else {
             tile.classList.add("yellow-piece");
             this.currentPlayer = Game.PLAYER;
+            console.log("Players turn")
         }
         row--; //Decrement the new column height to reflect the adding of the disk
         this.currentColumns[col] = row; //update the array
@@ -142,74 +161,13 @@ class Game {
             //The bot has won
             console.log("BOT WINS");
         }
-    }
-
-    checkForWinner(){
-        //Check horizontal
-        for (let row = 0; row < Game.NUMBER_OF_ROWS; row++) {
-            for (let col = 0; col < Game.NUMBER_OF_COLUMNS - 3; col++){
-                if (this.board[row][col]) {
-                    // if statement evaultes to true if there is a 4 in a row horizontally
-                    if (this.board[row][col] === this.board[row][col + 1] && this.board[row][col + 1] === this.board[row][col + 2] && this.board[row][col + 2] === this.board[row][col + 3]) {
-                        return [row, col];
-                    }
-                }
-            }
-        }
-
-        //Check vertical
-        for (let col = 0; col < Game.NUMBER_OF_COLUMNS; col++) {
-            for (let row = 0; row < Game.NUMBER_OF_ROWS - 3; row++) {
-                if (this.board[row][col]) {
-                    // if statement evaultes to true if there is a 4 in a row verical
-                    if (this.board[row][col] === this.board[row + 1][col] && this.board[row + 1][col] === this.board[row + 2][col] && this.board[row + 2][col] === this.board[row + 3][col]) {
-                        return [row, col];
-                    }
-                }
-            }
-        }
-
-        // check anti diagonal
-        for (let row = 0; row < Game.NUMBER_OF_ROWS - 3; row++) {
-            for (let col = 0; col < Game.NUMBER_OF_COLUMNS - 3; col++) {
-                if (this.board[row][col]) {
-                    // if statement evaultes to true if there is a 4 in the diagonal (left -> right)
-                    if (this.board[row][col] === this.board[row + 1][col + 1] && this.board[row + 1][col + 1] === this.board[row + 2][col + 2] && this.board[row + 2][col + 2] === this.board[row + 3][col + 3]) {
-                            return [row, col];
-                    }
-                }
-            }
-        }
-
-        // check diagonal
-        for (let row = 3; row < Game.NUMBER_OF_ROWS; row++) {
-            for (let col = 0; col < Game.NUMBER_OF_COLUMNS - 3; col++) {
-                if (this.board[row][col]) {
-                    // if statement evaultes to true if there is a 4 in the diagonal (right -> left)
-                    if (this.board[row][col] === this.board[row - 1][col + 1] && this.board[row - 1][col + 1] === this.board[row - 2][col + 2] && this.board[row - 2][col + 2] === this.board[row - 3][col + 3]) {
-                            return [row, col];
-                    }
-                }
-            }
-        }
-        //Game is still in play, neither player has met the winning constraint yet
-        return false;
+        return;
     };
 
-
-    //Returns an 2d array of valid coordinates
-    validCoordinates(){
-        const coordinates = [];
-        
-        for (let col = 0; col < Game.NUMBER_OF_COLUMNS; col++){
-            let row = this.currentColumns[col];
-
-            if (row >= 0) {
-                coordinates.push([row,col]);
-            }
-        }
-        return coordinates;
-    }
+    // Returns false is there is no winner, else it returns coodinates
+    checkForWinner(){
+        return checkForWinner(this.board, Game.NUMBER_OF_ROWS, Game.NUMBER_OF_COLUMNS);
+    };
 
     //Returns true if a board does have null
     boardHasNull(){
