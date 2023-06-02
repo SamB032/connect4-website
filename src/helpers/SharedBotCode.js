@@ -49,3 +49,16 @@ export function checkForWinner(board, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS){
     //Game is still in play, neither player has met the winning constraint yet
     return 0;
 };
+
+//Returns true if the still space to play, otherwise false
+export function boardContainsNull(board, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS){
+    for (let row = 0; row < NUMBER_OF_ROWS; row++) {
+        for (let col = 0; col < NUMBER_OF_COLUMNS; col ++) {
+            if (board[row][col] === null) {
+                //Returns true when a null value is encounted will looping, 
+                return true;
+            }
+        }
+    }
+    return false;
+}

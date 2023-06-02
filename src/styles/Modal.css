@@ -1,0 +1,6 @@
+.modal-override {
+    font-family: var(--font);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}

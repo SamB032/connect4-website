@@ -1,5 +1,5 @@
 //Implement minimax algorithm
-import {checkForWinner} from "./CheckWinner";
+import {checkForWinner, boardContainsNull} from "./SharedBotCode";
 import {getValidCoordinates} from "./findAvaliableColumns";
 
 const NUMBER_OF_ROWS = 6;
@@ -8,24 +8,11 @@ const NUMBER_OF_COLUMNS = 7;
 const PLAYER = 1;
 const BOT = 2;
 
-//Returns true if the still space to play, otherwise false
-function boardContainsNull(board){
-    for (let row = 0; row < NUMBER_OF_ROWS; row++) {
-        for (let col = 0; col < NUMBER_OF_COLUMNS; col ++) {
-            if (board[row][col] === null) {
-                //Returns true when a null value is encounted will looping, 
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 //Returns the value of a winnning disc if terminal (defined as having a winning condition or no spaces to play), otherwise return false
 function isTerminal(board){
     const hasWinner = checkForWinner(board, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS);
 
-    if (hasWinner >= 1 && !boardContainsNull(board)) {
+    if (hasWinner >= 1 && !boardContainsNull(board, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS)) {
         return board[hasWinner[0]][hasWinner[1]];
     }
     return false;

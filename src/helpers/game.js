@@ -1,13 +1,12 @@
-import {easyBotPredict} from "./Easybot";
+import {easyBotPredict} from "./easybot";
 import {runMinimax} from "./minimax";
-import {checkForWinner} from "./CheckWinner";
-
-//TODO END THE GAME WHEN ALL ROWS ARE FILLED
+import {checkForWinner, boardContainsNull} from "./SharedBotCode";
 
 class Game {
 
     static PLAYER = 1; //Identifies player on the board
     static BOT = 2; //Identifies the bot on the board
+    static DRAW = 3; //Identifies when the game has ended
 
     static NUMBER_OF_ROWS = 6; 
     static NUMBER_OF_COLUMNS = 7;
@@ -16,11 +15,12 @@ class Game {
     static HARD_DEPTH = 7; // Minimax algorithm looks 7 moves ahead for hard difficulty
 
     //Takes param of difficulty, this helps it choose the correct bot
-    constructor(difficulty) {
+    constructor(difficulty, handleOpenModal) {
         //Set the game up
 
         this.board = [];
         
+        this.handleOpenModal = handleOpenModal;
         this.difficulty = difficulty;
         this.LoadBot(difficulty);
 
@@ -56,8 +56,7 @@ class Game {
                 this.depth = Game.HARD_DEPTH;
                 break;
             default:
-                //TODO: Add redirect to 404 page
-                console.log("Error: bot difficulty not found");
+                console.error("Error: bot difficulty not found");
                 break;
         }
     };
@@ -100,15 +99,25 @@ class Game {
         this.updatePiece(col);
         
         winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
-        if (winningCoordinate){
+        
+        if (Array.isArray(winningCoordinate)) {
+            //Coordainte is returned from checkForWinner method, so we call the method to process this event
             this.hasWinner(winningCoordinate);
+        } else if (winningCoordinate === Game.DRAW) {  
+            //Game is complete, there is no winner
+            this.gameHasDraw();
+
         } else {
             //Bot will play its turn, check to see if the bots move has made it win
             
             this.updatePiece(this.makebotPredition());
             winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
-            if (winningCoordinate){
+            
+            if (Array.isArray(winningCoordinate)) {
                 this.hasWinner(winningCoordinate);
+            } else if (winningCoordinate === Game.DRAW) {  
+                //Game is complete, there is no winner
+                this.gameHasDraw();
             }
         }
         return;
@@ -135,7 +144,7 @@ class Game {
 
         if (this.currentPlayer === Game.PLAYER) {
             tile.classList.add("red-piece");
-            this.currentPlayer = Game.BOT;
+            this.currentPlayer = Game.BOT;  
             console.log("Bots turn");
         } else {
             tile.classList.add("yellow-piece");
@@ -144,7 +153,7 @@ class Game {
         }
         row--; //Decrement the new column height to reflect the adding of the disk
         this.currentColumns[col] = row; //update the array
-    }
+    };
 
     //A actor has won, this method will to stop the game and display a message
     hasWinner(winningCoordinate){
@@ -156,30 +165,26 @@ class Game {
 
         if (winningPlayer === Game.PLAYER) {
             //the player has won
-            console.log("PLAYER WINS");
+            this.handleOpenModal("Win", "You were able to make 4 in a row");
         } else if (winningPlayer === Game.BOT) {
             //The bot has won
-            console.log("BOT WINS");
+            this.handleOpenModal("Loss", "The bot was able to make a 4 in a row");
         }
-        return;
     };
+
+    gameHasDraw() {
+        this.gameOver = true; //Makes it so that once the game has finshed, the game cannot continue
+        this.handleOpenModal("Draw", "No player was able to make a 4 in a row");
+    }
 
     // Returns false is there is no winner, else it returns coodinates
     checkForWinner(){
+        //Checks to see if the board has no null, if so, reutrn the value of Game.DRAW
+        if (!boardContainsNull(this.board, Game.NUMBER_OF_ROWS, Game.NUMBER_OF_COLUMNS)) {
+            return Game.DRAW;
+        }
         return checkForWinner(this.board, Game.NUMBER_OF_ROWS, Game.NUMBER_OF_COLUMNS);
     };
-
-    //Returns true if a board does have null
-    boardHasNull(){
-        for (let row = 0; row < Game.NUMBER_OF_ROWS; row++) {
-            for (let col = 0; col < Game.NUMBER_OF_COLUMNS; col++) {
-                if (this.board[row][col] === null) {
-                    return true; // Found a null value, return true
-                }
-            }
-        }
-        return false; // No null values found
-    }
 
     coordinateOwnership(row, col){
         if (this.board[row][col] === Game.PLAYER) {

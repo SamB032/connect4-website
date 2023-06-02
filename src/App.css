@@ -5,11 +5,12 @@
     --secondary: #5175f2;
     --secondary-hover: #2d4dc0;
     --accent: #ffffff;
+    --font: var(Arial, Verdana, Helvetica, Georgia);
 }
 
 .App {
     text-align: center;
-    font-family: Arial, Verdana, Helvetica, Georgia;
+    font-family: var(--font);
   }
   
 html, body {
