@@ -23,7 +23,8 @@
 }
 
 .difficulty {
-    padding-top: 35px;
+    padding-top: 25px;
+    padding-bottom: 25px;
     font-size: 25px;
 }
 
@@ -61,10 +62,6 @@
         height: 60%;
     }
 
-    .difficulty {
-        padding-top: 20px;
-    }
-
     .items {
         padding: 0px;
         display: flex;
@@ -75,5 +72,9 @@
 
     .items button {
         margin: 20px;
+    }
+
+    .custom-btn {
+        margin-top: 25px;
     }
   }

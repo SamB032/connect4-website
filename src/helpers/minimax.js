@@ -43,66 +43,126 @@ function evaluateState(board, winningPlayer) {
         // Evaluate rows
         for (let row = 0; row < NUMBER_OF_ROWS; row++) {
             for (let col = 0; col < NUMBER_OF_COLUMNS - 3; col++) {
-            score += evaluateWindow(board[row].slice(col, col + 4), BOT);
-            score -= evaluateWindow(board[row].slice(col, col + 4), PLAYER);
+                if (board[row][col]) {
+                    
+                    const window = [
+                        board[row][col],
+                        board[row][col + 1],
+                        board[row][col + 2],
+                        board[row][col + 3] 
+                    ];
+                    score += evaluateWindow(window);
+                }
             }
         }
     
         // Evaluate columns
         for (let col = 0; col < NUMBER_OF_COLUMNS; col++) {
             for (let row = 0; row < NUMBER_OF_ROWS - 3; row++) {
-            const window = [
-                board[row][col],
-                board[row + 1][col],
-                board[row + 2][col],
-                board[row + 3][col]
-            ];
-            score += evaluateWindow(window, BOT);
-            score -= evaluateWindow(window, PLAYER);
-            }
-        }
-  
-        // Evaluate diagonals
-        for (let col = 0; col < NUMBER_OF_COLUMNS - 3; col++) {
-            for (let row = 0; row < NUMBER_OF_ROWS - 3; row++) {
-                const window1 = [
-                    board[row][col],
-                    board[row + 1][col + 1],
-                    board[row + 2][col + 2],
-                    board[row + 3][col + 3]
-                ];
-                score += evaluateWindow(window1, BOT);
-                score -= evaluateWindow(window1, PLAYER);
-        
                 const window2 = [
-                    board[row][col + 3],
-                    board[row + 1][col + 2],
-                    board[row + 2][col + 1],
+                    board[row][col],
+                    board[row + 1][col],
+                    board[row + 2][col],
                     board[row + 3][col]
                 ];
-                score += evaluateWindow(window2, BOT);
-                score -= evaluateWindow(window2, PLAYER);
+                score += evaluateWindow(window2);
+            }
+        }
+
+        //Diagonal
+        for (let row = 0; row < NUMBER_OF_ROWS - 3; row++) {
+            for (let col = 0; col < NUMBER_OF_COLUMNS - 3; col++) {
+                if (board[row][col]){
+
+                    const window3 = [
+                        board[row][col],
+                        board[row + 1][col + 1],
+                        board[row + 2][col + 2],
+                        board[row + 3][col + 3]
+                    ];
+
+                    //Evalute the score for both bot and player
+                    score += evaluateWindow(window3);
+                }
+            }
+        }
+
+        //AntiDiagonal
+        for (let row = 3; row < NUMBER_OF_ROWS; row++) {
+            for (let col = 0; col < NUMBER_OF_COLUMNS - 3; col++) {
+                if (board[row][col]) {
+                    
+                    const window4 = [
+                        board[row][col],
+                        board[row - 1][col + 1],
+                        board[row - 2][col + 2],
+                        board[row - 3][col + 3]
+                    ];
+                    
+                    //Evalute the score for both bot and player
+                    score += evaluateWindow(window4);
+                }
             }
         }
     return score; //Evaluation score for that particular state
     }
 }
 
-// Preforms an evaluation of a arrray and a given piece. That returns the player1 - player2 score
-function evaluateWindow(window, piece) {
-    var score = 0;
-    var oppPiece = (piece === PLAYER) ? BOT : PLAYER; //Gets the opposite piece
+// Evaluates the array depending on which player has the discs in sequence
+function evaluateWindow(arr) {
+    //Evaluation score, +ve for bot and -ve for player
+    const scores = {
+        botFour: 500,
+        botThree: 200,
+        botTwo: 20,
+        playerFour: -500,
+        playerThree: -150,
+        playerTwo: -20,
+    };  
 
-    var pieceCount = window.filter(item => item === piece).length; //Number of pieces in the array
-    var emptyCount = window.filter(item => item === null).length; //Number of empty spaces in the array
+    let score = 0;
 
-    //Increments the score based on the count
-    if (pieceCount === 4) score += 100;
-    else if (pieceCount === 3 && emptyCount === 1) score += 5;
-    else if (pieceCount === 2 && emptyCount === 2) score += 2;
+    //Keep track of the current disc streak 
+    let botCount = 0;
+    let playerCount = 0;
 
-    if (window.filter(item => item === oppPiece).length === 3 && emptyCount === 1) score -= 4;
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === BOT) {
+            //Reset player count, increment the botCount
+            playerCount = 0;
+            botCount++;
 
+            //Only starts evaluting the score if the disc streak of the bot is greater than 2
+            if (botCount >= 2) {
+                if (botCount === 4) {
+                    score += scores.botFour;
+                } else if (botCount === 3) {
+                    score += scores.botThree;
+                } else if (botCount === 2) { 
+                    score += scores.botTwo;
+                }
+            }
+        } else if (arr[i] === PLAYER) {
+            //Reset player count, increment the botCount
+            botCount = 0;
+            playerCount++;
+
+            //Only starts evaluting the score if the disc streak of the player is greater than 2
+            if (playerCount >= 2) {
+                if (playerCount === 4) {
+                    score += scores.playerFour;
+                } else if (playerCount === 3) {
+                    score += scores.playerThree;
+                } else if (playerCount === 2) { 
+                    score += scores.playerTwo;
+                }
+            }
+        } else {
+            //Reset counts since the streak has ended
+            botCount = 0;
+            playerCount = 0;
+        }
+    }
     return score;
 }
 
@@ -136,7 +196,7 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
                 value = newScore;
                 column = currentCoordinate[1];
             }
-
+            
             //Preforms alpha beta pruning
             alpha = Math.max(alpha, value);
             if (alpha >= beta) {
@@ -163,7 +223,7 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
                 value = newScore;
                 column = currentCoordinate[1];
             }
-
+            
             //Preforms alpha beta pruning
             beta = Math.min(beta, value);
             if (alpha >= beta) {
