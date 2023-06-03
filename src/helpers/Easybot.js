@@ -1,4 +1,4 @@
-import {getValidCoordinates} from "./findAvaliableColumns";
+import {getValidCoordinates} from "./SharedBotCode";
 
 //The easy bot just picks a column at random from avaliable columns
 export function easyBotPredict(board, depth) {

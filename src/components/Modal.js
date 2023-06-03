@@ -1,14 +1,14 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
+import {Link} from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 
-//TODO: USE CUSTOM BUTTONS AND ADD BETTER STYLING (IE COLOURS)
+import '../styles/Modal.css';
 
-function ModalComponent({showModal, handleClose, title, content, difficulty}) {
-  return (
+function ModalComponent({showModal, handleClose, title, content}) {  
+    return (
         <Modal show={showModal} onHide={handleClose} centered dialogClassName="modal-override">
 
-        <Modal.Header closeButton>
+        <Modal.Header closeButton={false}>
             <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
 
@@ -17,8 +17,11 @@ function ModalComponent({showModal, handleClose, title, content, difficulty}) {
         </Modal.Body>
 
         <Modal.Footer>
-            <Button variant="secondary" href="/">Return to Home</Button>
-            <Button variant="primary" href={difficulty}>New Game</Button>
+            <Link to="/">
+                <button className="custom-btn-secondary">Return to Home</button>
+            </Link>
+            
+            <button className="custom-btn-main" onClick={() => window.location.reload(true)}>New Game</button>   
         </Modal.Footer>
         </Modal>
   );

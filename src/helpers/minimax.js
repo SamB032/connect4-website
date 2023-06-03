@@ -1,12 +1,12 @@
-//Implement minimax algorithm
-import {checkForWinner, boardContainsNull} from "./SharedBotCode";
-import {getValidCoordinates} from "./findAvaliableColumns";
+import {checkForWinner, boardContainsNull, getValidCoordinates} from "./SharedBotCode";
+import {TranspositionTable} from "./TranspositionTable";
 
 const NUMBER_OF_ROWS = 6;
 const NUMBER_OF_COLUMNS = 7;
 
 const PLAYER = 1;
-const BOT = 2;
+const BOT = 2;  
+const hashTable = new TranspositionTable(); //Hashmap that speeds up evaluting boards by storing already cacaulates boards and value pairs
 
 //Returns the value of a winnning disc if terminal (defined as having a winning condition or no spaces to play), otherwise return false
 function isTerminal(board){
@@ -25,8 +25,16 @@ function evaluateState(board, winningPlayer) {
     } else if (winningPlayer === PLAYER) {
         return -1000; // Opponent wins - high negative value
     } else {
+        
+        
+        //Checks to see if the table is already in the transposition table, if so return the already caculated value
+        const tempScore = hashTable.get(board);
+        if (tempScore){
+            return tempScore;
+        }
+        
         let score = 0;
-  
+
         // Evaluate rows
         for (let row = 0; row < NUMBER_OF_ROWS; row++) {
             for (let col = 0; col < NUMBER_OF_COLUMNS - 3; col++) {
@@ -91,6 +99,7 @@ function evaluateState(board, winningPlayer) {
                 }
             }
         }
+    hashTable.put(board, score); //Adds the newly caculated score and board to the hashMap
     return score; //Evaluation score for that particular state
     }
 }
@@ -99,12 +108,12 @@ function evaluateState(board, winningPlayer) {
 function evaluateWindow(arr) {
     //Evaluation score, +ve for bot and -ve for player
     const scores = {
-        botFour: 500,
-        botThree: 200,
-        botTwo: 20,
-        playerFour: -500,
-        playerThree: -150,
-        playerTwo: -20,
+        botFour: 100,
+        botThree: 50,
+        botTwo: 8,
+        playerFour: -150,
+        playerThree: -60,
+        playerTwo: -10,
     };  
 
     let score = 0;
@@ -153,7 +162,6 @@ function evaluateWindow(arr) {
     return score;
 }
 
-
 // Returns the value and column pair of the best action for the bot player
 function minimax(board, depth, alpha, beta, maximizingPlayer) {
 
@@ -167,14 +175,14 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
 
     if (maximizingPlayer) {
         
-        const validCoordinates = getValidCoordinates(board);
+        const validCoordinates = getValidCoordinates(board, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS);
         let value = -Infinity;
 
         for (let coord = 0; coord < validCoordinates.length; coord++) {
             let currentCoordinate = validCoordinates[coord]; //All columns that are avalible
 
-            const child = JSON.parse(JSON.stringify(board)); //Makes a deep copy of the board
-            child[currentCoordinate[0]][currentCoordinate[1]] = 2; //Adds the a valid coordinate to the new board
+            const child = board.map(row => row.slice()); //Makes a deep copy of the board
+            child[currentCoordinate[0]][currentCoordinate[1]] = BOT; //Adds the a valid coordinate to the new board
 
             const newScore = minimax(child, depth - 1, alpha, beta, false)[1];
 
@@ -200,8 +208,8 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
         for (let coord = 0; coord < validCoordinates.length; coord++) {
             let currentCoordinate = validCoordinates[coord]; //All columns that are avalible
 
-            const child = JSON.parse(JSON.stringify(board)); //Makes a deep copy of the board
-            child[currentCoordinate[0]][currentCoordinate[1]] = 1; //Adds the a valid coordinate to the new board
+            const child = board.map(row => row.slice()); //Makes a deep copy of the board
+            child[currentCoordinate[0]][currentCoordinate[1]] = PLAYER; //Adds the a valid coordinate to the new board
 
             const newScore = minimax(child, depth - 1, alpha, beta, true)[1];
 
@@ -222,6 +230,6 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
 }
 
 export function runMinimax(board, searchDepth){
-    const bestMove = minimax(board, searchDepth, -Infinity, Infinity, true);
-    return bestMove[0];
+    const bestMove = minimax(board, searchDepth, -Infinity, Infinity, true); //Starts the recursive minimax call
+    return bestMove[0]; //Returns the column of the best move
 }

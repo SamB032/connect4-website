@@ -4,3 +4,40 @@
     align-items: center;
     justify-content: center;
 }
+
+.custom-btn-main {
+    margin-left: 25px;
+    margin-right: 25px;
+    height: 50px;
+    width: 140px;
+    font-size: 18px;
+    color: var(--accent);
+    background-color: var(--secondary);
+    border-color: transparent;
+    border-width: 1px;
+    border-radius: 0.375rem;
+    text-decoration: none;
+}
+
+.custom-btn-secondary {
+    margin-left: 25px;
+    margin-right: 25px;
+    height: 50px;
+    width: 140px;
+    font-size: 18px;
+    color: var(--accent);
+    background-color: var(--primary);
+    border-color: transparent;
+    border-width: 1px;
+    border-radius: 0.375rem;
+}
+
+.custom-btn-main:hover{
+    background-color: #2d4dc0;
+    transition: 0.4s;
+}
+
+.custom-btn-secondary:hover {
+    background-color: #148e90;
+    transition: all 0.4s;
+}

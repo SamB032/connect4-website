@@ -70,6 +70,12 @@ class Game {
     renderBoard() {
         const cells = [];
 
+        const processEvent = (event) => {
+            if (!this.gameOver && this.currentPlayer === Game.PLAYER){
+                this.setPiece(event.target.id.split("-"))
+            }
+        }
+
         //For each cell, create a div element, css styling makes it a circle
         for (let row = 0; row < Game.NUMBER_OF_ROWS; row++) {
             for (let col = 0; col < Game.NUMBER_OF_COLUMNS; col++) {
@@ -78,7 +84,7 @@ class Game {
                     key={cellId} 
                     id={cellId} 
                     className="tile" 
-                    onClick={(event) => this.setPiece(event.target.id.split("-"))}>
+                    onClick={processEvent}>
                     </div>);
                 // The onclick will send the coordinate to the div pressed to setPiece() method
             }
@@ -88,11 +94,6 @@ class Game {
 
     //Method runs when the player has chosen a space, the program will process these action, then the bots
     setPiece(coords) {
-        //Makes sure that the player is not playing out of turn
-        if (Game.PLAYER !== this.currentPlayer){
-            return;
-        }
-
         // Get column of item pressed
         let winningCoordinate;
         let col = parseInt(coords[1]);
@@ -109,10 +110,13 @@ class Game {
 
         } else {
             //Bot will play its turn, check to see if the bots move has made it win
-            
             this.updatePiece(this.makebotPredition());
             winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
             
+            if (this.gameOver){
+                return;
+            }
+
             if (Array.isArray(winningCoordinate)) {
                 this.hasWinner(winningCoordinate);
             } else if (winningCoordinate === Game.DRAW) {  
@@ -120,15 +124,10 @@ class Game {
                 this.gameHasDraw();
             }
         }
-        return;
     };
 
     //Once the player/bot has chosen the column, the program will place the disk
     updatePiece(col){
-        if (this.gameOver) {
-            return -1;
-        }
-
         // Find the row disc needs to be placed on
         let row = this.currentColumns[col]; 
         
@@ -145,11 +144,9 @@ class Game {
         if (this.currentPlayer === Game.PLAYER) {
             tile.classList.add("red-piece");
             this.currentPlayer = Game.BOT;  
-            console.log("Bots turn");
         } else {
             tile.classList.add("yellow-piece");
             this.currentPlayer = Game.PLAYER;
-            console.log("Players turn")
         }
         row--; //Decrement the new column height to reflect the adding of the disk
         this.currentColumns[col] = row; //update the array
@@ -186,13 +183,9 @@ class Game {
         return checkForWinner(this.board, Game.NUMBER_OF_ROWS, Game.NUMBER_OF_COLUMNS);
     };
 
+    //Returns the value of a coordinate
     coordinateOwnership(row, col){
-        if (this.board[row][col] === Game.PLAYER) {
-            return Game.PLAYER; //Coordinate belongs to player
-        } else if (this.board[row][col] === Game.BOT) {
-            return Game.BOT; //Coordinate belongs to bot
-        }
-        return null;
+        return this.board[row][col]
     }
 }
 

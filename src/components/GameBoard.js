@@ -25,7 +25,7 @@ function GameBoard(){
     return (
         <div className="board">
             {board.renderBoard()};
-            {showModal && <ModalComponent showModal={showModal} handleClose={handleCloseModal} title={modalTitle} content={modalContent} difficulty={difficulty}/>}
+            {showModal && <ModalComponent showModal={showModal} handleClose={handleCloseModal} title={modalTitle} content={modalContent}/>}
         </div>
     );
 };
