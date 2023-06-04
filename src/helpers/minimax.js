@@ -21,12 +21,10 @@ function isTerminal(board){
 // Assigns a value to when (depth === 0 or isTerminal), this helps the algorithm evalute the "goodness" of one state
 function evaluateState(board, winningPlayer) {
     if (winningPlayer === BOT) {
-        return 1000; // Bot wins - high positive value
+        return Infinity; // Bot wins - high positive value
     } else if (winningPlayer === PLAYER) {
-        return -1000; // Opponent wins - high negative value
+        return -Infinity; // Opponent wins - high negative value
     } else {
-        
-        
         //Checks to see if the table is already in the transposition table, if so return the already caculated value
         const tempScore = hashTable.get(board);
         if (tempScore){
@@ -38,16 +36,8 @@ function evaluateState(board, winningPlayer) {
         // Evaluate rows
         for (let row = 0; row < NUMBER_OF_ROWS; row++) {
             for (let col = 0; col < NUMBER_OF_COLUMNS - 3; col++) {
-                if (board[row][col]) {
-                    
-                    const window = [
-                        board[row][col],
-                        board[row][col + 1],
-                        board[row][col + 2],
-                        board[row][col + 3] 
-                    ];
-                    score += evaluateWindow(window);
-                }
+                const window = board[row].slice(col, col + 4);
+                score += evaluateWindow(window);
             }
         }
     
@@ -64,39 +54,48 @@ function evaluateState(board, winningPlayer) {
             }
         }
 
-        //Diagonal
+        // Diagonal from top-left to bottom-right
         for (let row = 0; row < NUMBER_OF_ROWS - 3; row++) {
             for (let col = 0; col < NUMBER_OF_COLUMNS - 3; col++) {
-                if (board[row][col]){
-
-                    const window3 = [
-                        board[row][col],
-                        board[row + 1][col + 1],
-                        board[row + 2][col + 2],
-                        board[row + 3][col + 3]
-                    ];
-
-                    //Evalute the score for both bot and player
-                    score += evaluateWindow(window3);
-                }
+                const window3 = [
+                    board[row][col],
+                    board[row + 1][col + 1],
+                    board[row + 2][col + 2],
+                    board[row + 3][col + 3]
+                ];
+                  const window4 = [
+                    board[row][col + 3],
+                    board[row + 1][col + 2],
+                    board[row + 2][col + 1],
+                    board[row + 3][col]
+                ];
+                
+                //Evalute the score for both bot and player
+                score += evaluateWindow(window3);
+                score += evaluateWindow(window4);
             }
         }
 
-        //AntiDiagonal
-        for (let row = 3; row < NUMBER_OF_ROWS; row++) {
-            for (let col = 0; col < NUMBER_OF_COLUMNS - 3; col++) {
-                if (board[row][col]) {
-                    
-                    const window4 = [
-                        board[row][col],
-                        board[row - 1][col + 1],
-                        board[row - 2][col + 2],
-                        board[row - 3][col + 3]
-                    ];
-                    
-                    //Evalute the score for both bot and player
-                    score += evaluateWindow(window4);
-                }
+        // Diagonal from top-right to bottom-left
+        for (let row = 0; row < NUMBER_OF_ROWS - 3; row++) {
+            for (let col = 3; col < NUMBER_OF_COLUMNS; col++) {
+                const window5 = [
+                    board[row][col],
+                    board[row + 1][col - 1],
+                    board[row + 2][col - 2],
+                    board[row + 3][col - 3]
+                ];
+        
+                const window6 = [
+                    board[row][col - 1],
+                    board[row + 1][col - 2],
+                    board[row + 2][col - 3],
+                    board[row + 3][col - 4]
+                ];
+        
+                // Evaluate the score for both bot and player
+                score += evaluateWindow(window5);
+                score += evaluateWindow(window6);
             }
         }
     hashTable.put(board, score); //Adds the newly caculated score and board to the hashMap
@@ -104,63 +103,96 @@ function evaluateState(board, winningPlayer) {
     }
 }
 
-// Evaluates the array depending on which player has the discs in sequence
-function evaluateWindow(arr) {
-    //Evaluation score, +ve for bot and -ve for player
-    const scores = {
-        botFour: 100,
-        botThree: 50,
-        botTwo: 8,
-        playerFour: -150,
-        playerThree: -60,
-        playerTwo: -10,
-    };  
-
-    let score = 0;
-
-    //Keep track of the current disc streak 
-    let botCount = 0;
-    let playerCount = 0;
+//Returns array of the maximum sequence of a given disk -> values >= 2 
+function getSuccesiveDiscs(arr) {
+    let maxPlayerCount = 0;
+    let maxBotCount = 0;
+    let nullCount = 0;
+    let disc = arr[0];
+    let currentDiscCount = 0;
 
     for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === BOT) {
-            //Reset player count, increment the botCount
-            playerCount = 0;
-            botCount++;
-
-            //Only starts evaluting the score if the disc streak of the bot is greater than 2
-            if (botCount >= 2) {
-                if (botCount === 4) {
-                    score += scores.botFour;
-                } else if (botCount === 3) {
-                    score += scores.botThree;
-                } else if (botCount === 2) { 
-                    score += scores.botTwo;
+        const currentDisc = arr[i];
+        
+        if (currentDisc === null){
+            //Reset count since we have reached a null -> indicating that ending of a disk sequence
+            currentDiscCount = 0;
+            disc = null;
+            nullCount++;
+        } else if (currentDisc !== null) {
+            if (disc === currentDisc) {
+                //The next disk is the same as the current, so just increment count
+                currentDiscCount++;
+                
+                //Update to keep track of maximum count
+                if (currentDisc === PLAYER) {
+                    maxPlayerCount = Math.max(maxPlayerCount, currentDiscCount);
+                } else if (currentDisc === BOT) {
+                    maxBotCount = Math.max(maxBotCount, currentDiscCount);
                 }
-            }
-        } else if (arr[i] === PLAYER) {
-            //Reset player count, increment the botCount
-            botCount = 0;
-            playerCount++;
-
-            //Only starts evaluting the score if the disc streak of the player is greater than 2
-            if (playerCount >= 2) {
-                if (playerCount === 4) {
-                    score += scores.playerFour;
-                } else if (playerCount === 3) {
-                    score += scores.playerThree;
-                } else if (playerCount === 2) { 
-                    score += scores.playerTwo;
-                }
-            }
-        } else {
-            //Reset counts since the streak has ended
-            botCount = 0;
-            playerCount = 0;
+            } else {
+                //We have reached the end of the sequence, so change the current disk
+                currentDiscCount = 1; //Reset to 1 since current disk is included in the count
+            }            
         }
+        disc = currentDisc; // Update the disk variable
     }
+    return [maxBotCount, maxPlayerCount, nullCount];
+}
+
+// Evaluates the array depending on which player has the discs in sequence
+function evaluateWindow(arr) {
+    const scores = {
+        botFour: 180,
+        botThree: 60,
+        botTwo: 5,
+        playerFour: -250,
+        playerThree: -75,
+        playerTwo: -20,
+        botThreat: 50,      // Bonus score for potential bot threats
+        playerThreat: -50,  // Penalty score for potential player threats
+    };
+
+    let score = 0;
+    const maxCounts = getSuccesiveDiscs(arr); //[Bot, Player nullCounts]
+
+    switch(maxCounts[0]) {
+        case 4:
+            score += scores.botFour;
+            break;
+        case 3: 
+            score += scores.botThree;
+            break;
+        case 2:
+            score += scores.botTwo;
+            break;
+        default:
+            break;
+    }
+
+    switch(maxCounts[1]) {
+        case 4:
+            score += scores.playerFour;
+            break;
+        case 3:
+            score += scores.playerThree;
+            break;
+        case 2:
+            score += scores.playerTwo;
+            break;
+        default:
+            break;
+    }
+
+    // if (maxCounts[0] + maxCounts[2] === 3) {
+    //     score += scores.botThreat;
+    // } else if (maxCounts[1] + maxCounts[2] === 3) {
+    //     score += scores.playerThreat;
+    // }
+
     return score;
 }
+
 
 // Returns the value and column pair of the best action for the bot player
 function minimax(board, depth, alpha, beta, maximizingPlayer) {
@@ -170,18 +202,17 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
     if (depth === 0 || winningPlayer){
         return [0,  evaluateState(board, winningPlayer)];
     }
-    
+
     let column; 
+    const validCoordinates = getValidCoordinates(board, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS);
 
     if (maximizingPlayer) {
-        
-        const validCoordinates = getValidCoordinates(board, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS);
         let value = -Infinity;
 
         for (let coord = 0; coord < validCoordinates.length; coord++) {
             let currentCoordinate = validCoordinates[coord]; //All columns that are avalible
 
-            const child = board.map(row => row.slice()); //Makes a deep copy of the board
+            const child = JSON.parse(JSON.stringify(board)); //Makes a deep copy of the board	
             child[currentCoordinate[0]][currentCoordinate[1]] = BOT; //Adds the a valid coordinate to the new board
 
             const newScore = minimax(child, depth - 1, alpha, beta, false)[1];
@@ -201,14 +232,12 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
         return [column, value];
 
     } else {
-        
-        const validCoordinates = getValidCoordinates(board);
         let value = Infinity;   
 
         for (let coord = 0; coord < validCoordinates.length; coord++) {
             let currentCoordinate = validCoordinates[coord]; //All columns that are avalible
 
-            const child = board.map(row => row.slice()); //Makes a deep copy of the board
+            const child = JSON.parse(JSON.stringify(board)); //Makes a deep copy of the board	
             child[currentCoordinate[0]][currentCoordinate[1]] = PLAYER; //Adds the a valid coordinate to the new board
 
             const newScore = minimax(child, depth - 1, alpha, beta, true)[1];
@@ -231,5 +260,6 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
 
 export function runMinimax(board, searchDepth){
     const bestMove = minimax(board, searchDepth, -Infinity, Infinity, true); //Starts the recursive minimax call
+    console.log(bestMove);
     return bestMove[0]; //Returns the column of the best move
 }

@@ -11,7 +11,7 @@ class Game {
     static NUMBER_OF_ROWS = 6; 
     static NUMBER_OF_COLUMNS = 7;
 
-    static MEDIUM_DEPTH = 1; // Minimax algorithm only looks 1 move ahead for medium difficulty
+    static MEDIUM_DEPTH = 2; // Minimax algorithm only looks 2 moves ahead for medium difficulty
     static HARD_DEPTH = 7; // Minimax algorithm looks 7 moves ahead for hard difficulty
 
     //Takes param of difficulty, this helps it choose the correct bot
@@ -73,6 +73,9 @@ class Game {
         const processEvent = (event) => {
             if (!this.gameOver && this.currentPlayer === Game.PLAYER){
                 this.setPiece(event.target.id.split("-"))
+            } else {
+                event.stopPropagation(); // Stop the event from propagating further
+                event.preventDefault(); // Prevent the default behavior of the event
             }
         }
 
@@ -113,10 +116,6 @@ class Game {
             this.updatePiece(this.makebotPredition());
             winningCoordinate = this.checkForWinner(); //returns the coordinates a the winning 4 in a row
             
-            if (this.gameOver){
-                return;
-            }
-
             if (Array.isArray(winningCoordinate)) {
                 this.hasWinner(winningCoordinate);
             } else if (winningCoordinate === Game.DRAW) {  
