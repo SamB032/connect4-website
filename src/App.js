@@ -2,8 +2,9 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import {useEffect} from 'react';
 
 import Home from './pages/Home';
+import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
-import GameBoard from './components/GameBoard'
+import GameBoard from './components/GameBoard';
 
 import PageNotFound from './pages/PageNotFound';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/game/:difficulty" element={<GameBoard/>} />
+          <Route path="/profile" element={<Profile/>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>

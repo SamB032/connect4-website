@@ -21,9 +21,9 @@ function isTerminal(board){
 // Assigns a value to when (depth === 0 or isTerminal), this helps the algorithm evalute the "goodness" of one state
 function evaluateState(board, winningPlayer) {
     if (winningPlayer === BOT) {
-        return Infinity; // Bot wins - high positive value
+        return Number.MAX_VALUE; // Bot wins - high positive value
     } else if (winningPlayer === PLAYER) {
-        return -Infinity; // Opponent wins - high negative value
+        return -Number.MAX_VALUE; // Opponent wins - high negative value
     } else {
         //Checks to see if the table is already in the transposition table, if so return the already caculated value
         const tempScore = hashTable.get(board);
@@ -183,13 +183,6 @@ function evaluateWindow(arr) {
         default:
             break;
     }
-
-    // if (maxCounts[0] + maxCounts[2] === 3) {
-    //     score += scores.botThreat;
-    // } else if (maxCounts[1] + maxCounts[2] === 3) {
-    //     score += scores.playerThreat;
-    // }
-
     return score;
 }
 
