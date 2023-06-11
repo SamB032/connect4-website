@@ -9,6 +9,10 @@ function Navbar() {
     return (
         <div className="navbar">
             <div className="links">
+                <Link to="/">
+                    <button className="nav-button">Home</button>
+                </Link>
+                
                 {!isAuthenticated ? (
                     <button className="nav-button" onClick={loginWithRedirect}>
                         Login

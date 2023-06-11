@@ -13,17 +13,11 @@
     color: var(--primary);
 }
 
-.navbar a {
-    color: var(--accent);
-    text-decoration: none;
-    margin: 20px;
-    font-size: 25px;
-}
-
 .nav-button {
 	height: 40px;
 	width: 90px;
 	font-size: 18px;
+    margin: 10px;
 	color: var(--accent);
 	background-color: var(--secondary);
 	border-color: transparent;

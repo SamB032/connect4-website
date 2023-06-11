@@ -1,12 +1,12 @@
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import {useEffect} from 'react';
 
-import Home from './pages/Home';
-import Profile from './pages/Profile';
+import Home from './pages/HomePage';
+import Profile from './pages/ProfilePage';
 import Navbar from './components/Navbar';
 import GameBoard from './components/GameBoard';
-
 import PageNotFound from './pages/PageNotFound';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 

@@ -22,7 +22,7 @@
     height: 25%;
 }
 
-.difficulty {
+.heading {
     padding-top: 25px;
     padding-bottom: 25px;
     font-size: 25px;
@@ -60,6 +60,11 @@
     .image {
         width: 60%;
         height: 60%;
+    }
+
+    .heading {
+        padding-top: 10px;
+        padding-bottom: 0px;
     }
 
     .items {

@@ -156,8 +156,10 @@ class Game {
         this.gameOver = true; //Makes it so that once the game has finshed, the game cannot continue
         let row = winningCoordinate[0];
         let col = winningCoordinate[1];
-    
+
+        
         let winningPlayer = this.coordinateOwnership(row, col);
+        // mongoWrite({"Winning Player": winningPlayer});
 
         if (winningPlayer === Game.PLAYER) {
             //the player has won
