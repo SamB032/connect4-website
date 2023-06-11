@@ -18,7 +18,6 @@ function Profile(){
     if (!isAuthenticated) {
         return null; // or render a loading spinner or a message
     }
-    // const userId =    user.sub;
 
     return (
         <div className="profile">

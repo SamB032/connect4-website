@@ -253,6 +253,5 @@ function minimax(board, depth, alpha, beta, maximizingPlayer) {
 
 export function runMinimax(board, searchDepth){
     const bestMove = minimax(board, searchDepth, -Infinity, Infinity, true); //Starts the recursive minimax call
-    console.log(bestMove);
     return bestMove[0]; //Returns the column of the best move
 }

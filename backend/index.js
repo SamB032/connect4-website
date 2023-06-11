@@ -3,11 +3,13 @@ const express = require('express');
 const cors = require("cors");
 require('dotenv').config();
 
+// Grabs mongoDB infomation from enviroment variables
 const DB_USERNAME = process.env.DB_USERNAME;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_NAME = process.env.DB_NAME;
 const DB_COLLECTION = process.env.DB_COLLECTION
 
+//URI that the DB is at
 const URI = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@connect4cluster.q5osx0y.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
 
 mongoose.connect(URI, {
@@ -30,6 +32,14 @@ const gameSchema = new mongoose.Schema(
         type: Number,
         required: true,
         },
+      difficulty: {
+        type: String,
+        required: true,
+        },
+      userID: {
+        type: String,
+        required: true,
+        },
     }, {
       versionKey: false,
     }
@@ -43,16 +53,17 @@ const app = express();
 console.log("App listen at port 5000");
 
 app.use(express.json());
-app.use(cors());
 
-app.get("/", (req, resp) => {
-    resp.send("App is Working");   
-});
- 
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true, // Enable sending cookies across origins if necessary
+  }));
+
+//Accepts a JSON with key values WinningPlayer and Difficulty, This will create a docuement in mongoDB
 app.post("/addGame", async (req, resp) => {
     try {
-        const { winningPlayer } = req.body;
-        const game = new Game({ winningPlayer });
+        const {winningPlayer, difficulty, userID} = req.body;
+        const game = new Game({winningPlayer, difficulty, userID});
         await game.save();
         
         resp.send("Game added successfully");
@@ -62,6 +73,7 @@ app.post("/addGame", async (req, resp) => {
     }
 });
 
+//Returns all JSONS - ONLY FOR TESTING ATM
 app.get("/getGames", async (req, resp) => {
     try {
         const games = await Game.find();
