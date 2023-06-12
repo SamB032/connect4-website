@@ -65,19 +65,19 @@ app.post("/addGame", async (req, resp) => {
         const {winningPlayer, difficulty, userID} = req.body;
         const game = new Game({winningPlayer, difficulty, userID});
         await game.save();
-        
-        resp.send("Game added successfully");
+        resp.status(200).send("Game added successfully");
     } catch (error) {
         console.error('Error adding game:', error);
         resp.status(500).send("Something went wrong");
     }
 });
 
-//Returns all JSONS - ONLY FOR TESTING ATM
+//Returns all JSONS relating to a specific player
 app.get("/getGames", async (req, resp) => {
     try {
-        const games = await Game.find();
-        resp.json(games);
+        const {userID} = req.query;
+        const games = await Game.find({userID: userID});
+        resp.status(200).json(games);
     } catch (error) {
         console.error('Error fetching games:', error);
         resp.status(500).send("Something went wrong");

@@ -1,10 +1,12 @@
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
+import {getGameData} from '../helpers/ConnectorAPI';
 
 import '../styles/Profile.css' 
 
 function Profile(){
+    const [gameData, setGameData] = useState(null);
     const {user, isAuthenticated} = useAuth0();
     const navigate = useNavigate();
 
@@ -14,9 +16,23 @@ function Profile(){
           navigate('/');
         }
     }, [isAuthenticated, navigate]);
+    
+    useEffect(() => {
+        fetchData(user.sub);
+      }, [user]);
         
-    if (!isAuthenticated) {
-        return null; // or render a loading spinner or a message
+      
+    async function fetchData(userID) {
+        try {
+            const data = await getGameData(userID); // Call the getGameData function from your utility file
+            setGameData(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    
+    if (!isAuthenticated || !user) {
+        return null;
     }
 
     return (
@@ -55,10 +71,14 @@ function Profile(){
 
                 <hr className="divider-bold"/>
 
-
+                {gameData ? (
+                    <div>
+                        {JSON.stringify(gameData)}
+                    </div>
+                ) : (
+                    <p>Loading...</p>
+                )}
             </div>
-
-
         </div>
     )
 }
