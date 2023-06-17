@@ -46,6 +46,10 @@
     margin: 0px;
 }
 
+.ratio {
+    margin-bottom: 5px;
+}
+
 .divider {
     margin: 0;
     border-top: 1px solid black;
@@ -75,7 +79,7 @@
     padding: 10px;
 }
 
-@media only screen and (max-width: 650px) {
+@media only screen and (max-width: 700px) {
     .profile {
         flex-direction: column;
     }
@@ -90,6 +94,11 @@
     }
 
     .games {
+        margin: 0 auto;
+    }
+
+    .game {
+        width: 75%;
         margin: 0 auto;
     }
 }   

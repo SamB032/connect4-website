@@ -1,7 +1,7 @@
 import React from 'react';
 import GameResult from './gameResult'
 
-const showFirstNGames = 15;
+const showFirstNGames = 10; //Only show the latest n games
 
 export default function GameHistory({gameData}) {
 
