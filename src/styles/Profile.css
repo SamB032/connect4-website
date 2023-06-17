@@ -1,6 +1,5 @@
 .profile {
     display: flex;
-    /* color: var(--accent); */
 }
 
 .sidebar {
@@ -57,12 +56,17 @@
     border-top: 2px solid black;
 }
 
-.games {
-    height: 80vh;
+.game {
     width: 75%;
     background-color: var(--accent);
     margin: none;
     border-radius: 25px;
+}
+
+.games-scrollable { /* Set the desired height for scrollable games section */
+    max-height: 528px;
+    overflow-y: auto;
+    padding-right: 10px; /* Add some right padding to prevent scrollbar overlapping content */
 }
 
 .history-head {

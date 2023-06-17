@@ -2,8 +2,10 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import {getGameData} from '../helpers/ConnectorAPI';
-
+import GameHistory from '../components/gameHistory'
+import gameSidebar from '../helpers/gameSidebar';
 import '../styles/Profile.css' 
+
 
 function Profile(){
     const [gameData, setGameData] = useState(null);
@@ -35,7 +37,10 @@ function Profile(){
         return null;
     }
 
-    return (
+    // Call gameSidebar to get the sidebar array when gameData is available
+    const sidebarArr = gameData ? gameSidebar(gameData) : [[0], [0], [0]];
+
+    return (        
         <div className="profile">
            {/* Contains the name and profile picture */}
             <div className="sidebar">
@@ -45,39 +50,37 @@ function Profile(){
                 <div className="brief-history">
                     <div className="difficulty-item">
                         <p className="difficulty-name">Easy</p>
-                        <p className="wdl">5 1 0</p>
+                        <p className="wdl">{sidebarArr[0].join(" ")}</p>
                     </div>
                     
                     <hr className="divider"/>
                     
                     <div className="difficulty-item">
                         <p className="difficulty-name">Medium</p>
-                        <p className="wdl">4 4 2</p>
+                        <p className="wdl">{sidebarArr[1].join(" ")}</p>
                     </div>
             
                     <hr className="divider"/>
 
                     <div className="difficulty-item">
                         <p className="difficulty-name">Hard</p>
-                        <p className="wdl">4 5 2</p>
+                        <p className="wdl">{sidebarArr[2].join(" ")}</p>
                     </div>
                 </div>
-
             </div>
 
             {/* Contains statistics and game history */}
-            <div className="games">
+            <div className="game">
                 <p className="history-head">Game Infomation</p>
-
                 <hr className="divider-bold"/>
 
-                {gameData ? (
-                    <div>
-                        {JSON.stringify(gameData)}
-                    </div>
-                ) : (
-                    <p>Loading...</p>
-                )}
+                <div className="games-scrollable">
+                    {gameData ? (
+                        <GameHistory gameData={gameData} />
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </div>
             </div>
         </div>
     )
