@@ -103,89 +103,70 @@ function evaluateState(board, winningPlayer) {
     }
 }
 
-//Returns array of the maximum sequence of a given disk -> values >= 2 
-function getSuccesiveDiscs(arr) {
-    let maxPlayerCount = 0;
-    let maxBotCount = 0;
-    let nullCount = 0;
-    let disc = arr[0];
-    let currentDiscCount = 0;
-
-    for (let i = 0; i < arr.length; i++) {
-        const currentDisc = arr[i];
-        
-        if (currentDisc === null){
-            //Reset count since we have reached a null -> indicating that ending of a disk sequence
-            currentDiscCount = 0;
-            disc = null;
-            nullCount++;
-        } else if (currentDisc !== null) {
-            if (disc === currentDisc) {
-                //The next disk is the same as the current, so just increment count
-                currentDiscCount++;
-                
-                //Update to keep track of maximum count
-                if (currentDisc === PLAYER) {
-                    maxPlayerCount = Math.max(maxPlayerCount, currentDiscCount);
-                } else if (currentDisc === BOT) {
-                    maxBotCount = Math.max(maxBotCount, currentDiscCount);
-                }
-            } else {
-                //We have reached the end of the sequence, so change the current disk
-                currentDiscCount = 1; //Reset to 1 since current disk is included in the count
-            }            
-        }
-        disc = currentDisc; // Update the disk variable
-    }
-    return [maxBotCount, maxPlayerCount, nullCount];
-}
-
 // Evaluates the array depending on which player has the discs in sequence
-function evaluateWindow(arr) {
-    const scores = {
-        botFour: 180,
-        botThree: 60,
-        botTwo: 5,
-        playerFour: -250,
-        playerThree: -75,
-        playerTwo: -20,
-        botThreat: 50,      // Bonus score for potential bot threats
-        playerThreat: -50,  // Penalty score for potential player threats
-    };
-
-    let score = 0;
-    const maxCounts = getSuccesiveDiscs(arr); //[Bot, Player nullCounts]
-
-    switch(maxCounts[0]) {
-        case 4:
-            score += scores.botFour;
-            break;
-        case 3: 
-            score += scores.botThree;
-            break;
-        case 2:
-            score += scores.botTwo;
-            break;
-        default:
-            break;
+function evaluateWindow(window) {  
+    const positionWeights = [
+      [3, 4, 5, 7, 5, 4, 3],
+      [4, 6, 8, 10, 8, 6, 4],
+      [5, 8, 11, 13, 11, 8, 5],
+      [5, 8, 11, 13, 11, 8, 5],
+      [4, 6, 8, 10, 8, 6, 4],
+      [3, 4, 5, 7, 5, 4, 3]
+    ];
+  
+    let playerDiscs = 0;
+    let botDiscs = 0;
+  
+    //Loops through the window and caculate the count of bot and player discs
+    for (let i = 0; i < window.length; i++) {  
+        if (window[i] === PLAYER) {
+            playerDiscs++;
+        } else if (window[i]=== BOT) {
+            botDiscs++;
+        }
     }
+  
+    if (playerDiscs === 4) {
+        // Player wins
+        return -Number.MAX_VALUE; 
 
-    switch(maxCounts[1]) {
-        case 4:
-            score += scores.playerFour;
-            break;
-        case 3:
-            score += scores.playerThree;
-            break;
-        case 2:
-            score += scores.playerTwo;
-            break;
-        default:
-            break;
+    } else if (botDiscs === 4) {
+        // Bot wins
+        return Number.MAX_VALUE; 
+
+    } else if (botDiscs === 3 && playerDiscs === 0) {
+        // Favorable for bot
+        return 1000; 
+
+    } else if (playerDiscs === 3 && botDiscs === 0) {
+        // Favorable for player
+        return -1000; 
+
+    } else if (botDiscs === 2 && playerDiscs === 0) {
+        // Slightly favorable for bot
+        return 100;
+
+    } else if (playerDiscs === 2 && botDiscs === 0) {
+        // Slightly favorable for player
+        return -100; 
+
+    } else {
+        //Runs when conditions for immediate win or known threats/opportunities are not met above
+        //Calculate score based on position-based weights
+        let score = 0;
+    
+        for (let i = 0; i < window.length; i++) {
+            
+            //Assigns weights to moves that arey advantageous
+            if (window[i] === PLAYER) {
+                score -= positionWeights[i % NUMBER_OF_ROWS][i % NUMBER_OF_COLUMNS];
+            } else if (window[i] === BOT) {
+                score += positionWeights[i % NUMBER_OF_ROWS][i % NUMBER_OF_COLUMNS];
+            }
+        }
+        return score;
     }
-    return score;
 }
-
 
 // Returns the value and column pair of the best action for the bot player
 function minimax(board, depth, alpha, beta, maximizingPlayer) {
