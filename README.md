@@ -1,70 +1,52 @@
-# Getting Started with Create React App
+# Getting started with the application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Description
+The connect4 CPU implements a Minimax algorithm with alpha-beta pruning to decide the next best move. This is not used in the easy difficulty, positions are chosen at random. However, for the medium difficulty, the CPU looks at 2 Moves ahead, whereas its 7 moves ahead on the Hard mode. The algorithm is sped up by alpha-beta pruning, this is where we don't visit child nodes that are unlikely to affect the output of the game. The transposition table allows for caching and quick evaluation for intermediate game states. 
 
-## Available Scripts
+The evaluation function is positive for the CPU and negative score for the player. This is calculated based on the number of successive discs for each player in the row, column, diagonal and anti-diagonal. I also went further on to implement threat detection, where positions towards the middle contribute more to the evaluation score for that specific state. When playing the medium or hard difficulties, you might find that the CPU picks moves that end up with children that have no chance of the player winning, rather than playing the winning move. If I came back to this project, I would hope to remove this behaviour.
 
-In the project directory, you can run:
+The application uses the MERN stack: react for the frontend; nodejs, expressjs and mongodb for the backend. Mongodb is used to store the result of each game. The ExpressJS running with Nodejs exposes the API for the frontend to make POST requests for the game and GET requests for returning game history. This is an optional feature; Auth0 is used to authenticate users and attached a unique account id in the backend. The profile page is optional, however, this requires the backend to be properly configured. This profile page gives a summary of statistics with different difficulties, as well as a list of previous games.
 
-### `npm start`
+## Installation Guide
+### Fronted
+Clone the Git Repository
+   ```
+   git clone https://github.com/SamB032/connect4.git
+   ```
+Move into the Directory of the Project
+  ```
+  cd connect4
+  ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Install the required NPM Packages
+   ```
+   npm install
+   ```
+Start the website on Local Host
+  ```
+  npm start
+  ```
+### Backend: Optionally for the /profile page
+  Please install nodejs beforehand.
+  Move into the server Directory
+  ```
+  cd connect4/server
+  ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Install the required NPM Packages
+   ```
+   npm install
+   ```
+Configure Environment Variables in the "/connect4/.env"
+   ```
+    REACT_APP_AUTH0_DOMAIN={Domain of Auth0}
+    REACT_APP_AUTH0_CLIENT_ID={Client ID from auth0}
+    DB_USERNAME={Username of DB from MongoDB}
+    DB_PASSWORD={Password of DB from MongoDB}
+    DB_NAME={Name of DB form Mongodb}
+    DB_COLLECTION={Collection of Containing DB from Mongodb}
+  ```
+Start the website on Local Host
+  ```
+  node server.js
+  ```
