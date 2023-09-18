@@ -1,5 +1,7 @@
 # Getting started with the application
 
+Avaliable on: [https://samb032.github.io/connect4/](https://samb032.github.io/connect4/)
+
 ## Description
 The connect4 CPU implements a Minimax algorithm with alpha-beta pruning to decide the next best move. This is not used in the easy difficulty, positions are chosen at random. However, for the medium difficulty, the CPU looks at 2 Moves ahead, whereas its 7 moves ahead on the Hard mode. The algorithm is sped up by alpha-beta pruning, this is where we don't visit child nodes that are unlikely to affect the output of the game. The transposition table allows for caching and quick evaluation for intermediate game states. 
 
