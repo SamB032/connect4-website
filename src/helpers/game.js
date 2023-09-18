@@ -1,7 +1,6 @@
 import {easyBotPredict} from "./easybot";
 import {runMinimax} from "./minimax";
 import {checkForWinner, boardContainsNull} from "./SharedBotCode";
-import {addGamePost} from "./ConnectorAPI";
 
 class Game {
 
@@ -16,14 +15,13 @@ class Game {
     static HARD_DEPTH = 7; // Minimax algorithm looks 7 moves ahead for hard difficulty
 
     //Takes param of difficulty, this helps it choose the correct bot
-    constructor(difficulty, handleOpenModal, userID) {
+    constructor(difficulty, handleOpenModal) {
         //Set the game up
 
         this.board = [];
         
         this.handleOpenModal = handleOpenModal;
         this.difficulty = difficulty;
-        this.userID = userID;
         this.LoadBot(difficulty);
 
         this.currentColumns = [5, 5, 5, 5, 5, 5, 5];
@@ -161,11 +159,6 @@ class Game {
 
         let winningPlayer = this.coordinateOwnership(row, col);
         
-        //Sends the winning player to the backend to write the to mongoDB, if only they are logged in
-        if (this.userID !== false) {
-            addGamePost(winningPlayer, this.difficulty, this.userID);
-        }
-
         if (winningPlayer === Game.PLAYER) {
             //the player has won
             this.handleOpenModal("Win", "You were able to make 4 in a row");
@@ -177,12 +170,6 @@ class Game {
 
     gameHasDraw() {
         this.gameOver = true; //Makes it so that once the game has finshed, the game cannot continue
-
-        //Sends the draw to the backend to write the to mongoDB, only if they are logged in
-        if (this.userID) {
-            addGamePost(this.DRAW, this.difficulty);
-        }
-
         this.handleOpenModal("Draw", "No player was able to make a 4 in a row");
     };
 

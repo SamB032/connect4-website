@@ -1,6 +1,5 @@
 import {useState} from 'react';
 import {useParams} from "react-router-dom";
-import {useAuth0} from '@auth0/auth0-react';
 
 import ModalComponent from './Modal';
 import '../styles/GameBoard.css';
@@ -12,7 +11,6 @@ function GameBoard(){
     const [showModal, setShowModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [modalContent, setModalContent] = useState('');
-    const {user, isAuthenticated} = useAuth0();
 
     const handleCloseModal = () => setShowModal(false);
         
@@ -22,12 +20,7 @@ function GameBoard(){
         setShowModal(true);
     };
 
-    let userID = false;
-    if (isAuthenticated){
-        userID = user.sub;
-    }
-
-    const board = new Game(difficulty, handleOpenModal, userID);
+    const board = new Game(difficulty, handleOpenModal);
 
     return (
         <div className="board">
