@@ -17,7 +17,7 @@ function ModalComponent({showModal, handleClose, title, content}) {
         </Modal.Body>
 
         <Modal.Footer>
-            <Link to="/">
+            <Link to="/connect4">
                 <button className="custom-btn-secondary">Return to Home</button>
             </Link>
             
