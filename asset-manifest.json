@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/connect4/static/css/main.0a25817e.css",
-    "main.js": "/connect4/static/js/main.51924a61.js",
+    "main.js": "/connect4/static/js/main.4dc84ab1.js",
     "static/js/787.77f4ac17.chunk.js": "/connect4/static/js/787.77f4ac17.chunk.js",
     "static/media/connect4game.webp": "/connect4/static/media/connect4game.5b2d61dd7fa3e9e4137f.webp",
     "index.html": "/connect4/index.html",
     "main.0a25817e.css.map": "/connect4/static/css/main.0a25817e.css.map",
-    "main.51924a61.js.map": "/connect4/static/js/main.51924a61.js.map",
+    "main.4dc84ab1.js.map": "/connect4/static/js/main.4dc84ab1.js.map",
     "787.77f4ac17.chunk.js.map": "/connect4/static/js/787.77f4ac17.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0a25817e.css",
-    "static/js/main.51924a61.js"
+    "static/js/main.4dc84ab1.js"
   ]
 }
