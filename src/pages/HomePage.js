@@ -22,15 +22,15 @@ function Home() {
                 </div>
 
                 {/* Buttons for selecting the difficulty */}
-                <Link to="/game/easy">
+                <Link to="/connect4/game/easy">
                     <button className="custom-btn">Easy</button>
                 </Link>
                
-                <Link to="/game/medium">
+                <Link to="/connect4/game/medium">
                     <button className="custom-btn">Medium</button>
                 </Link>
                 
-                <Link to="/game/hard">
+                <Link to="/connect4/game/hard">
                     <button className="custom-btn">Hard</button>
                 </Link>
             </div>

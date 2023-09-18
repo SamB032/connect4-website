@@ -6,7 +6,7 @@ function Navbar() {
     return (
         <div className="navbar">
             <div className="links">
-                <Link to="/">
+                <Link to="/connect4">
                     <button className="nav-button">Home</button>
                 </Link>
             </div>
