@@ -21,8 +21,8 @@ function App() {
       <Router>
         <Navbar/>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/game/:difficulty" element={<GameBoard/>} />
+          <Route path="/connect4" element={<Home />} />
+          <Route path="/connect4/game/:difficulty" element={<GameBoard/>} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
