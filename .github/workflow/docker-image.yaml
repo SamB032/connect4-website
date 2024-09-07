@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "Game-only" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "Game-only" ]
 
 env:
   REGISTRY: ghcr.io
